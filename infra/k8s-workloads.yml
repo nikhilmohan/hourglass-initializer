@@ -8,6 +8,9 @@ spec:
       containers:
         - name: initializer
           image: nikmohan81/initializer
+          env:
+            - name: SPRING_PROFILES_ACTIVE
+              value: prod
       restartPolicy: Never
   backoffLimit: 2
 
