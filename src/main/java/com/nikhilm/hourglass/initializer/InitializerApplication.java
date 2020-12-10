@@ -18,6 +18,7 @@ import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.ReactiveMongoTemplate;
 import org.springframework.data.mongodb.core.index.TextIndexDefinition;
 import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 import javax.annotation.PostConstruct;
 import java.util.ArrayList;
@@ -52,7 +53,8 @@ public class InitializerApplication implements CommandLineRunner {
 		loadMovieKeywordData();
 		loadTidbitTopicData();
 
-		movieKeywordRepository.deleteAll()
+		initIndexes()
+				.thenMany(movieKeywordRepository.deleteAll())
 				.thenMany(movieKeywordRepository.saveAll(keywords))
 				.thenMany(topicRepository.deleteAll())
 				.thenMany(topicRepository.saveAll(topics))
@@ -80,26 +82,18 @@ public class InitializerApplication implements CommandLineRunner {
 
 	}
 
-	@Bean
-	public MongoClient mongoClient() {
-		return MongoClients.create();
-	}
 
-	@Bean
-	public ReactiveMongoTemplate reactiveMongoTemplate() {
-		return new ReactiveMongoTemplate(mongoClient(), "hourglass");
-	}
-
-	@PostConstruct
-	public void initIndexes() {
+	public Mono<String> initIndexes() {
 		TextIndexDefinition textIndex = new TextIndexDefinition.TextIndexDefinitionBuilder()
 				.onField("name")
 				.onField("description")
 				.build();
-		reactiveMongoTemplate.indexOps("goals") // collection name string or .class
-				.ensureIndex(textIndex).block();
 
-		log.info("index created!");
+		log.info("Creating index");
+		return reactiveMongoTemplate.indexOps("goals") // collection name string or .class
+				.ensureIndex(textIndex);
+
+
 
 	}
 
