@@ -11,8 +11,12 @@ import org.springframework.data.mongodb.repository.config.EnableReactiveMongoRep
 @EnableReactiveMongoRepositories
 public class DBConfig extends AbstractReactiveMongoConfiguration {
 
-    @Value("${spring.data.mongodb.database}")
     private String db;
+
+    @Value("${spring.data.mongodb.database}")
+    public void setDb(String db)    {
+        this.db = db;
+    }
 
     @Bean
     public MongoClient mongoClient() {
