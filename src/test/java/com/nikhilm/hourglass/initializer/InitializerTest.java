@@ -44,7 +44,7 @@ public class InitializerTest {
 
 
     @Test
-    public void testInitialize() {
+    public void testInitialize() throws Exception {
         List<MovieKeyword> keywordList = Arrays.asList(new MovieKeyword("1", "forest", 1),
                 new MovieKeyword("2", "land", 2), new MovieKeyword("3", "car", 3));
 
@@ -68,7 +68,7 @@ public class InitializerTest {
         ReactiveIndexOperations reactiveIndexOperations = mock(ReactiveIndexOperations.class);
         Mockito.when(reactiveMongoTemplate.indexOps("goals")).thenReturn(reactiveIndexOperations);
         Mockito.when(reactiveIndexOperations.ensureIndex(any(IndexDefinition.class))).thenReturn(Mono.just("index_1"));
-        application.initialize();
+        application.run();
         verify(movieKeywordRepository).deleteAll();
     }
     @Test
