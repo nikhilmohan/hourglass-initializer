@@ -48,6 +48,10 @@ public class InitializerApplication implements CommandLineRunner {
 	@Override
 	public void run(String... args) throws Exception {
 
+		initialize();
+	}
+
+	public void initialize() {
 		log.info("Initializing movie keyword data and topic data");
 
 		loadMovieKeywordData();
@@ -61,9 +65,8 @@ public class InitializerApplication implements CommandLineRunner {
 				.blockLast();
 
 		log.info("done!");
-
-
 	}
+
 	private void loadMovieKeywordData()	{
 		keywords.addAll(Arrays.asList(MovieKeyword.of("city"), MovieKeyword.of("woods"), MovieKeyword.of("sand")
 		, MovieKeyword.of("water"), MovieKeyword.of("ball"), MovieKeyword.of("three"), MovieKeyword.of("summer"),
